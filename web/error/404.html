@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>404 Not Found</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#DCDCDC">
+</head>
+<style>
+    body {
+        background-color: #dcdcdc;
+    }
+
+    h1, h2, p {
+        text-align: center;
+        font-family: 楷体, monospace;
+        font-size: 30px;
+    }
+</style>
+<body>
+<div id="main">
+    <h1 style="font-size: 100px">404</h1>
+    <h2>Not Found</h2>
+    <p id="msg">The requested URL </p>
+</div>
+<script>
+    let msgP = document.getElementById("msg");
+    msgP.innerText += (" " + location.pathname + " was not found on this server.");
+</script>
+</body>
+</html>
