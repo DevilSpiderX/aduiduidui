@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "server.static-location",
+      "type": "java.lang.String",
+      "defaultValue": "web",
+      "description": "Static file directory."
+    }
+  ]
+}
