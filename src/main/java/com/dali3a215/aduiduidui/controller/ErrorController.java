@@ -1,6 +1,7 @@
 package com.dali3a215.aduiduidui.controller;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,10 +27,10 @@ public class ErrorController {
 
     @RequestMapping("/userNoLogin")
     @ResponseBody
-    public JSONObject UserNoLogin() {
-        JSONObject respJson = new JSONObject();
-        respJson.put("code", "100");
-        respJson.put("msg", "没有权限，请登录");
-        return respJson;
+    public ResultMap UserNoLogin() {
+        ResultMap resultMap = new ResultMap();
+        resultMap.setCode(100);
+        resultMap.setMsg("没有权限，请登录");
+        return resultMap;
     }
 }

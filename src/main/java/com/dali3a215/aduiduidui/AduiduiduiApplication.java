@@ -2,8 +2,10 @@ package com.dali3a215.aduiduidui;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @SpringBootApplication
+@ServletComponentScan
 public class AduiduiduiApplication {
 
     public static void main(String[] args) {

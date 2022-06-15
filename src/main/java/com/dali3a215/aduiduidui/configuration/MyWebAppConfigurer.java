@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONReader;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring.http.converter.FastJsonHttpMessageConverter;
+import com.dali3a215.aduiduidui.util.FormToJSONHttpMessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.server.ErrorPageRegistrar;
@@ -22,7 +23,6 @@ import java.util.List;
 
 @Configuration
 public class MyWebAppConfigurer implements WebMvcConfigurer, ErrorPageRegistrar {
-
     @Value("${server.static-location}")
     private String static_location;
 
@@ -35,6 +35,7 @@ public class MyWebAppConfigurer implements WebMvcConfigurer, ErrorPageRegistrar 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(0, fastJsonHttpMessageConverter());
+        converters.add(new FormToJSONHttpMessageConverter());
     }
 
     private FastJsonHttpMessageConverter fastJsonHttpMessageConverter() {
