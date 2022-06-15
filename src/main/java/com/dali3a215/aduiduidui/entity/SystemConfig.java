@@ -6,10 +6,10 @@ import java.io.Serializable;
  * (SystemConfig)实体类
  *
  * @author makejava
- * @since 2022-06-14 23:12:05
+ * @since 2022-06-15 11:34:53
  */
 public class SystemConfig implements Serializable {
-    private static final long serialVersionUID = -75581694194357130L;
+    private static final long serialVersionUID = -41537598324440453L;
     
     private Integer id;
     
@@ -18,7 +18,6 @@ public class SystemConfig implements Serializable {
     private String value;
     
     private String remark;
-
 
     public Integer getId() {
         return id;
@@ -52,5 +51,14 @@ public class SystemConfig implements Serializable {
         this.remark = remark;
     }
 
+    @Override
+    public String toString() {
+        return "SystemConfig{" +
+                "id=" + id +
+                ", key='" + key + '\'' +
+                ", value='" + value + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
 }
 

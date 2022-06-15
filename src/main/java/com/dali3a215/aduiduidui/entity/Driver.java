@@ -6,31 +6,30 @@ import java.io.Serializable;
  * (Driver)实体类
  *
  * @author makejava
- * @since 2022-06-14 23:11:03
+ * @since 2022-06-15 11:34:53
  */
 public class Driver implements Serializable {
-    private static final long serialVersionUID = 889742212169604540L;
-    
-    private Integer id;
-    
-    private String name;
-    
-    private Integer enableCache;
-    
-    private Integer autoRefreshCache;
-    
-    private Integer enableSearch;
-    
-    private Integer searchIgnoreCase;
-    
-    private Long maxSize;
-    
-    private Long usedSize;
-    
-    private String title;
-    
-    private String value;
+    private static final long serialVersionUID = -39219902576635890L;
 
+    private Integer id;
+
+    private String name;
+
+    private Boolean enableCache;
+
+    private Boolean autoRefreshCache;
+
+    private Boolean enableSearch;
+
+    private Boolean searchIgnoreCase;
+
+    private Long maxSize;
+
+    private Long usedSize;
+
+    private String title;
+
+    private String value;
 
     public Integer getId() {
         return id;
@@ -48,35 +47,35 @@ public class Driver implements Serializable {
         this.name = name;
     }
 
-    public Integer getEnableCache() {
+    public Boolean getEnableCache() {
         return enableCache;
     }
 
-    public void setEnableCache(Integer enableCache) {
+    public void setEnableCache(Boolean enableCache) {
         this.enableCache = enableCache;
     }
 
-    public Integer getAutoRefreshCache() {
+    public Boolean getAutoRefreshCache() {
         return autoRefreshCache;
     }
 
-    public void setAutoRefreshCache(Integer autoRefreshCache) {
+    public void setAutoRefreshCache(Boolean autoRefreshCache) {
         this.autoRefreshCache = autoRefreshCache;
     }
 
-    public Integer getEnableSearch() {
+    public Boolean getEnableSearch() {
         return enableSearch;
     }
 
-    public void setEnableSearch(Integer enableSearch) {
+    public void setEnableSearch(Boolean enableSearch) {
         this.enableSearch = enableSearch;
     }
 
-    public Integer getSearchIgnoreCase() {
+    public Boolean getSearchIgnoreCase() {
         return searchIgnoreCase;
     }
 
-    public void setSearchIgnoreCase(Integer searchIgnoreCase) {
+    public void setSearchIgnoreCase(Boolean searchIgnoreCase) {
         this.searchIgnoreCase = searchIgnoreCase;
     }
 
@@ -112,5 +111,20 @@ public class Driver implements Serializable {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", enableCache=" + enableCache +
+                ", autoRefreshCache=" + autoRefreshCache +
+                ", enableSearch=" + enableSearch +
+                ", searchIgnoreCase=" + searchIgnoreCase +
+                ", maxSize=" + maxSize +
+                ", usedSize=" + usedSize +
+                ", title='" + title + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
 }
 

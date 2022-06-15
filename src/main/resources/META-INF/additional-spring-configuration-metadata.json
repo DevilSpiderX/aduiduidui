@@ -9,32 +9,32 @@
     {
       "name": "bee.db.dbName",
       "type": "java.lang.String",
-      "description": "Description for bee.db.dbName."
+      "description": "Database name."
     },
     {
       "name": "bee.db.driverName",
       "type": "java.lang.String",
-      "description": "Description for bee.db.driverName."
+      "description": "Database driver name."
     },
     {
       "name": "bee.db.url",
       "type": "java.lang.String",
-      "description": "Description for bee.db.url."
+      "description": "Database connection URL."
     },
     {
       "name": "bee.db.username",
       "type": "java.lang.String",
-      "description": "Description for bee.db.username."
+      "description": "Database user's username."
     },
     {
       "name": "bee.db.password",
       "type": "java.lang.String",
-      "description": "Description for bee.db.password."
+      "description": "Database user's password."
     },
     {
       "name": "bee.osql.showSQL",
-      "type": "java.lang.String",
-      "description": "Description for bee.osql.showSQL."
+      "type": "java.lang.Boolean",
+      "description": "Whether to display the sql statement when using."
     }
   ]
 }
