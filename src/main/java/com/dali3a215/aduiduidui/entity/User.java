@@ -6,10 +6,10 @@ import java.io.Serializable;
  * (User)实体类
  *
  * @author makejava
- * @since 2022-06-14 23:12:05
+ * @since 2022-06-15 11:34:53
  */
 public class User implements Serializable {
-    private static final long serialVersionUID = -46291660982939504L;
+    private static final long serialVersionUID = 608917564889841178L;
     
     private String uid;
     
@@ -20,7 +20,6 @@ public class User implements Serializable {
     private String sex;
     
     private String information;
-
 
     public String getUid() {
         return uid;
@@ -62,5 +61,15 @@ public class User implements Serializable {
         this.information = information;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", sex='" + sex + '\'' +
+                ", information='" + information + '\'' +
+                '}';
+    }
 }
 

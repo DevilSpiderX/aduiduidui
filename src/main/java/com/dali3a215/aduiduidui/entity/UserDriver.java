@@ -6,10 +6,10 @@ import java.io.Serializable;
  * (UserDriver)实体类
  *
  * @author makejava
- * @since 2022-06-14 23:12:05
+ * @since 2022-06-15 11:34:53
  */
 public class UserDriver implements Serializable {
-    private static final long serialVersionUID = 933917397825537548L;
+    private static final long serialVersionUID = 766466304548177401L;
     
     private Integer id;
     
@@ -20,7 +20,6 @@ public class UserDriver implements Serializable {
     private String virtualPath;
     
     private String physicalPath;
-
 
     public Integer getId() {
         return id;
@@ -62,5 +61,15 @@ public class UserDriver implements Serializable {
         this.physicalPath = physicalPath;
     }
 
+    @Override
+    public String toString() {
+        return "UserDriver{" +
+                "id=" + id +
+                ", uid='" + uid + '\'' +
+                ", driveId=" + driveId +
+                ", virtualPath='" + virtualPath + '\'' +
+                ", physicalPath='" + physicalPath + '\'' +
+                '}';
+    }
 }
 
