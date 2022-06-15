@@ -5,6 +5,36 @@
       "type": "java.lang.String",
       "defaultValue": "web",
       "description": "Static file directory."
+    },
+    {
+      "name": "bee.db.dbName",
+      "type": "java.lang.String",
+      "description": "Description for bee.db.dbName."
+    },
+    {
+      "name": "bee.db.driverName",
+      "type": "java.lang.String",
+      "description": "Description for bee.db.driverName."
+    },
+    {
+      "name": "bee.db.url",
+      "type": "java.lang.String",
+      "description": "Description for bee.db.url."
+    },
+    {
+      "name": "bee.db.username",
+      "type": "java.lang.String",
+      "description": "Description for bee.db.username."
+    },
+    {
+      "name": "bee.db.password",
+      "type": "java.lang.String",
+      "description": "Description for bee.db.password."
+    },
+    {
+      "name": "bee.osql.showSQL",
+      "type": "java.lang.String",
+      "description": "Description for bee.osql.showSQL."
     }
   ]
 }
