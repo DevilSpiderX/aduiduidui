@@ -102,4 +102,9 @@ public class UserServiceImpl implements UserService {
         return session.getAttribute("userStatus") != null &&
                 session.getAttribute("userStatus").equals("logged");
     }
+
+    @Override
+    public List<User> getUserList() {
+        return dao.select(new User());
+    }
 }

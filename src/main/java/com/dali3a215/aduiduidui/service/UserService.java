@@ -3,6 +3,7 @@ package com.dali3a215.aduiduidui.service;
 import com.dali3a215.aduiduidui.entity.User;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public interface UserService {
 
@@ -19,4 +20,6 @@ public interface UserService {
     int update(String uid, String password, String username, String sex, String info);
 
     boolean isLogged(HttpSession session);
+
+    List<User> getUserList();
 }

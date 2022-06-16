@@ -1,6 +1,7 @@
 package com.dali3a215.aduiduidui.controller;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultData;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import com.dali3a215.aduiduidui.entity.User;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/user")
@@ -19,8 +21,8 @@ public class UserController {
 
     @PostMapping("/login")
     @ResponseBody
-    public ResultMap login(@RequestBody JSONObject reqJson, HttpSession session) {
-        ResultMap resultMap = new ResultMap();
+    public ResultMap<Void> login(@RequestBody JSONObject reqJson, HttpSession session) {
+        ResultMap<Void> respResult = new ResultMap<>();
         if (reqJson.containsKey("uid") && reqJson.containsKey("password")) {
             String uid = reqJson.getString("uid");
             String password = reqJson.getString("password");
@@ -28,34 +30,34 @@ public class UserController {
                 session.setAttribute("userStatus", "logged");
                 session.setAttribute("uid", uid);
 
-                resultMap.setCode(0);
-                resultMap.setMsg("登录成功");
+                respResult.setCode(0);
+                respResult.setMsg("登录成功");
             } else {
-                resultMap.setCode(1);
-                resultMap.setMsg("密码错误");
+                respResult.setCode(1);
+                respResult.setMsg("密码错误");
             }
         } else {
-            resultMap.setCode(2);
-            resultMap.setMsg("uid或者password不能为空");
+            respResult.setCode(2);
+            respResult.setMsg("uid或者password不能为空");
         }
-        return resultMap;
+        return respResult;
     }
 
     @PostMapping("/logout")
     @ResponseBody
-    public ResultMap logout(HttpSession session) {
-        ResultMap resultMap = new ResultMap();
+    public ResultMap<Void> logout(HttpSession session) {
+        ResultMap<Void> respResult = new ResultMap<>();
         session.removeAttribute("userStatus");
         session.removeAttribute("uid");
-        resultMap.setCode(0);
-        resultMap.setMsg("退出成功");
-        return resultMap;
+        respResult.setCode(0);
+        respResult.setMsg("退出成功");
+        return respResult;
     }
 
     @PostMapping("/register")
     @ResponseBody
-    public ResultMap register(@RequestBody JSONObject reqJson) {
-        ResultMap resultMap = new ResultMap();
+    public ResultMap<Void> register(@RequestBody JSONObject reqJson) {
+        ResultMap<Void> respResult = new ResultMap<>();
         if (reqJson.containsKey("uid") && reqJson.containsKey("password")
                 && !reqJson.getString("password").equals("")) {
             String uid = reqJson.getString("uid");
@@ -65,33 +67,33 @@ public class UserController {
             String info = reqJson.getString("information");
             int result = userService.register(uid, password, userName, sex, info);
             if (result == 1) {
-                resultMap.setCode(0);
-                resultMap.setMsg("注册成功");
+                respResult.setCode(0);
+                respResult.setMsg("注册成功");
             } else {
-                resultMap.setCode(1);
-                resultMap.setMsg("注册失败");
+                respResult.setCode(1);
+                respResult.setMsg("注册失败");
             }
         } else {
-            resultMap.setCode(2);
-            resultMap.setMsg("uid或者password不能为空");
+            respResult.setCode(2);
+            respResult.setMsg("uid或者password不能为空");
         }
-        return resultMap;
+        return respResult;
     }
 
     @GetMapping("/info")
     @ResponseBody
     public ResultData<User> infoGet(@RequestParam String uid) {
-        ResultData<User> resultData = new ResultData<>();
+        ResultData<User> respResult = new ResultData<>();
         User user = userService.getUserWithInfo(uid);
         if (user != null) {
-            resultData.setCode(0);
-            resultData.setMsg("获取成功");
-            resultData.setData(user);
+            respResult.setCode(0);
+            respResult.setMsg("获取成功");
+            respResult.setData(user);
         } else {
-            resultData.setCode(1);
-            resultData.setMsg("用户不存在");
+            respResult.setCode(1);
+            respResult.setMsg("用户不存在");
         }
-        return resultData;
+        return respResult;
     }
 
     @PostMapping("/info")
@@ -102,8 +104,8 @@ public class UserController {
 
     @PostMapping("/update")
     @ResponseBody
-    public ResultMap update(@RequestBody JSONObject reqJson, HttpSession session) {
-        ResultMap resultMap = new ResultMap();
+    public ResultMap<Void> update(@RequestBody JSONObject reqJson, HttpSession session) {
+        ResultMap<Void> respResult = new ResultMap<>();
         String uid = (String) session.getAttribute("uid");
         String username = reqJson.getString("username");
         String password = reqJson.getString("password");
@@ -111,12 +113,26 @@ public class UserController {
         String information = reqJson.getString("information");
         int result = userService.update(uid, password, username, sex, information);
         if (result == 1) {
-            resultMap.setCode(0);
-            resultMap.setMsg("修改成功");
+            respResult.setCode(0);
+            respResult.setMsg("修改成功");
         } else {
-            resultMap.setCode(1);
-            resultMap.setMsg("修改失败");
+            respResult.setCode(1);
+            respResult.setMsg("修改失败");
         }
-        return resultMap;
+        return respResult;
+    }
+
+    @PostMapping("/list")
+    @ResponseBody
+    public ResultArray<User> list(@RequestBody JSONObject reqJson) {
+        ResultArray<User> respResult = new ResultArray<>();
+        respResult.setCode(0);
+        respResult.setMsg("获取成功");
+        List<User> users = userService.getUserList();
+        for (User user : users) {
+            user.setPassword(null);
+        }
+        respResult.setData(users);
+        return respResult;
     }
 }

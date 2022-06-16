@@ -3,11 +3,11 @@ package com.dali3a215.aduiduidui.controller.response;
 import java.io.Serializable;
 import java.util.List;
 
-public class ResultArray implements Serializable {
+public class ResultArray<T> implements Serializable {
     private static final long serialVersionUID = 7798393073388894464L;
     private int code;
     private String msg;
-    private List<Object> data;
+    private List<T> data;
 
     public int getCode() {
         return code;
@@ -25,11 +25,11 @@ public class ResultArray implements Serializable {
         this.msg = msg;
     }
 
-    public List<Object> getData() {
+    public List<T> getData() {
         return data;
     }
 
-    public void setData(List<Object> data) {
+    public void setData(List<T> data) {
         this.data = data;
     }
 }
