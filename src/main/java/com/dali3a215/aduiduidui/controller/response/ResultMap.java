@@ -3,11 +3,11 @@ package com.dali3a215.aduiduidui.controller.response;
 import java.io.Serializable;
 import java.util.Map;
 
-public class ResultMap implements Serializable {
+public class ResultMap<V> implements Serializable {
     private static final long serialVersionUID = -6491814391528291642L;
     private int code;
     private String msg;
-    private Map<String, Object> data;
+    private Map<String, V> data;
 
     public int getCode() {
         return code;
@@ -25,11 +25,11 @@ public class ResultMap implements Serializable {
         this.msg = msg;
     }
 
-    public Map<String, Object> getData() {
+    public Map<String, V> getData() {
         return data;
     }
 
-    public void setData(Map<String, Object> data) {
+    public void setData(Map<String, V> data) {
         this.data = data;
     }
 }
