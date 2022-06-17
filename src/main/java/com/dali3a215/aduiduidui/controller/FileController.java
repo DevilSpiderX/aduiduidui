@@ -25,7 +25,6 @@ public class FileController {
 
     @GetMapping("/list")
     public ResultArray<AduiFile> list(@RequestParam String path, HttpSession session) {
-        if (path == null) path = "/";
         ResultArray<AduiFile> respResult = new ResultArray<>();
         respResult.setData(new LinkedList<>());
         String uid = (String) session.getAttribute("uid");

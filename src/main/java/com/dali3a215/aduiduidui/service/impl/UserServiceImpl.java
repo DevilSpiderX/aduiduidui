@@ -47,26 +47,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int register(String uid, String password, String username, String sex, String info) {
+    public boolean register(String uid, String password, String username, String sex, String info) {
         User newUser = initNewUser(uid, AduiCipher.sha256Encrypt(password), username, sex, info);
-        return dao.insert(newUser, IncludeType.INCLUDE_EMPTY);
+        return dao.insert(newUser, IncludeType.INCLUDE_EMPTY) == 1;
     }
 
     @Override
-    public int update(String uid, String password, String username, String sex, String info) {
-        if (password == null && username == null && sex == null && info == null) return 0;
+    public boolean update(String uid, String password, String username, String sex, String info) {
+        if (password == null && username == null && sex == null && info == null) return false;
         User newUser = new User();
         newUser.setUid(uid);
         newUser.setPassword(password == null || password.equals("") ? null : AduiCipher.sha256Encrypt(password));
         newUser.setUsername(username);
         newUser.setSex(sex != null && sex.equals("") ? "M" : sex);
         newUser.setInformation(info);
-        return dao.updateBy(newUser, "uid", IncludeType.INCLUDE_EMPTY);
+        return dao.updateBy(newUser, "uid", IncludeType.INCLUDE_EMPTY) == 1;
     }
 
     @Override
-    public int delete(String uid) {
-        return 0;
+    public boolean delete(String uid) {
+        return false;
     }
 
     private User initNewUser(String uid, String password, String userName, String sex, String info) {

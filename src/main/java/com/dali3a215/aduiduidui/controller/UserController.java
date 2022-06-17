@@ -65,8 +65,7 @@ public class UserController {
             String userName = reqJson.getString("username");
             String sex = reqJson.getString("sex");
             String info = reqJson.getString("information");
-            int result = userService.register(uid, password, userName, sex, info);
-            if (result == 1) {
+            if (userService.register(uid, password, userName, sex, info)) {
                 respResult.setCode(0);
                 respResult.setMsg("注册成功");
             } else {
@@ -111,8 +110,7 @@ public class UserController {
         String password = reqJson.getString("password");
         String sex = reqJson.getString("sex");
         String information = reqJson.getString("information");
-        int result = userService.update(uid, password, username, sex, information);
-        if (result == 1) {
+        if (userService.update(uid, password, username, sex, information)) {
             respResult.setCode(0);
             respResult.setMsg("修改成功");
         } else {
@@ -127,8 +125,7 @@ public class UserController {
     public ResultMap<Void> delete(@RequestBody JSONObject reqJson) {
         ResultMap<Void> respResult = new ResultMap<>();
         String uid = reqJson.getString("uid");
-        int result = userService.delete(uid);
-        if (result == 1) {
+        if (userService.delete(uid)) {
             respResult.setCode(0);
             respResult.setMsg("删除成功");
         } else {
