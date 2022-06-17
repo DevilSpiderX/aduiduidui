@@ -35,7 +35,6 @@ public class AdminController {
                 respResult.getData().put("adminName", systemConfigService.getAdminName());
 
                 session.setAttribute("admin", true);
-                session.setAttribute("userStatus", "logged");
             } else {
                 respResult.setCode(1);
                 respResult.setMsg("账号密码错误");
@@ -52,7 +51,6 @@ public class AdminController {
     public ResultMap<Void> logout(HttpSession session) {
         ResultMap<Void> respResult = new ResultMap<>();
         session.removeAttribute("admin");
-        session.removeAttribute("userStatus");
         respResult.setCode(0);
         respResult.setMsg("退出成功");
         return respResult;

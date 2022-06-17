@@ -122,9 +122,25 @@ public class UserController {
         return respResult;
     }
 
-    @PostMapping("/list")
+    @PostMapping("/delete")
     @ResponseBody
-    public ResultArray<User> list(@RequestBody JSONObject reqJson) {
+    public ResultMap<Void> delete(@RequestBody JSONObject reqJson) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        String uid = reqJson.getString("uid");
+        int result = userService.delete(uid);
+        if (result == 1) {
+            respResult.setCode(0);
+            respResult.setMsg("删除成功");
+        } else {
+            respResult.setCode(1);
+            respResult.setMsg("删除失败");
+        }
+        return respResult;
+    }
+
+    @RequestMapping("/list")
+    @ResponseBody
+    public ResultArray<User> list() {
         ResultArray<User> respResult = new ResultArray<>();
         respResult.setCode(0);
         respResult.setMsg("获取成功");

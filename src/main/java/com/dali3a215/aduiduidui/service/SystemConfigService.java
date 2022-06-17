@@ -1,5 +1,7 @@
 package com.dali3a215.aduiduidui.service;
 
+import javax.servlet.http.HttpSession;
+
 public interface SystemConfigService {
 
     void init();
@@ -15,4 +17,6 @@ public interface SystemConfigService {
     String getAdminName();
 
     void setAdminName(String name);
+
+    boolean isAdmin(HttpSession session);
 }

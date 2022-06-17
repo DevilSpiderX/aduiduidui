@@ -27,10 +27,19 @@ public class ErrorController {
 
     @RequestMapping("/userNoLogin")
     @ResponseBody
-    public ResultMap UserNoLogin() {
-        ResultMap resultMap = new ResultMap();
+    public ResultMap<Void> UserNoLogin() {
+        ResultMap<Void> resultMap = new ResultMap<>();
         resultMap.setCode(100);
         resultMap.setMsg("没有权限，请登录");
+        return resultMap;
+    }
+
+    @RequestMapping("/noAdmin")
+    @ResponseBody
+    public ResultMap<Void> NoAdmin() {
+        ResultMap<Void> resultMap = new ResultMap<>();
+        resultMap.setCode(101);
+        resultMap.setMsg("没有管理员权限");
         return resultMap;
     }
 }

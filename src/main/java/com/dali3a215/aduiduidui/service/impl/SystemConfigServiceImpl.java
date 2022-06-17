@@ -9,6 +9,7 @@ import org.teasoft.bee.osql.IncludeType;
 import org.teasoft.bee.osql.SuidRich;
 import org.teasoft.honey.osql.core.BeeFactoryHelper;
 
+import javax.servlet.http.HttpSession;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,5 +96,10 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     @Override
     public void setAdminName(String name) {
         setValue("adminName", name, null);
+    }
+
+    @Override
+    public boolean isAdmin(HttpSession session) {
+        return session.getAttribute("admin") != null && (Boolean) session.getAttribute("admin");
     }
 }
