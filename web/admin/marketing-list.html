@@ -2,7 +2,7 @@
 <html class="x-admin-sm">
 <head>
     <meta charset="UTF-8">
-    <title>校园二手市场管理系统</title>
+    <title>啊对网盘后台管理界面</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport"
@@ -29,7 +29,7 @@
                 <div class="layui-card-body ">
                     <form class="layui-form layui-col-space5">
                         <div class="layui-input-inline layui-show-xs-block">
-                            <input class="layui-input" placeholder="用户名" name="username">
+                            <input class="layui-input" placeholder="用户账号" name="uid">
                         </div>
                         <div class="layui-input-inline layui-show-xs-block">
                             <button class="layui-btn" lay-submit="" lay-filter="sreach">
@@ -38,11 +38,6 @@
                         </div>
                     </form>
 
-                </div>
-                <div class="layui-card-header">
-                    <button class="layui-btn" onclick="xadmin.open('添加用户','./marketing-add.html',800,600)"><i
-                            class="layui-icon"></i>添加
-                    </button>
                 </div>
                 <div class="layui-card-body ">
                     <table id="demo" lay-filter="test"></table>
@@ -57,10 +52,7 @@
 </div>
 </body>
 <script type="text/html" id="barDemo">
-    <a title="编辑" lay-event="edit" href="javascript:;">
-        <i class="layui-icon">&#xe642;</i>
-    </a>
-    <a title="删除" lay-event="del" href="javascript:;">
+    <a title="删除" lay-event="del" href="javascript:">
         <i class="layui-icon">&#xe640;</i>
     </a>
 </script>
@@ -85,25 +77,28 @@
             },
             cols: [[
                 {field: 'uid', title: '用户账号'},
-                {field: 'username', title: '用户名字'},
+                {field: 'username', title: '用户名'},
                 {
                     field: 'sex', title: 'sex', templet(d) {
                         if (d.sex === "M") {
                             return '男'
-                        } else {
+                        } else if (d.sex === "F") {
                             return '女'
+                        } else {
+                            return ''
                         }
                     }
                 },
                 {field: 'information', title: '信息'},
+                {title: '操作', toolbar: "#barDemo"}
             ]],
             parseData: function (msg) {
                 console.log(msg);
                 return {
                     "code": 0,
                     "msg": '',
-                    "count": msg.data.length,
-                    "data": msg.data
+                    "count": msg.data instanceof Array ? msg.data.length : 1,
+                    "data": msg.data instanceof Array ? msg.data : [msg.data]
                 }
             }
         });
@@ -116,58 +111,47 @@
                     console.log(data);
                     data.origin = UrlHost();
                     data.sid = sessionStorage.getItem("sid");
-                    data.id = data.uid;
                     $.ajax({
-                        url: url + "/sysStudent",
-                        method: "delete",
+                        url: url + "/api/user/delete",
+                        method: "post",
                         data: data,
                         dataType: "json",
                         success: function (msg) {
                             console.log(msg);
-                            if (msg) {
+                            if (msg.code === 0) {
                                 obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
                                 layer.msg('删除成功');
                             } else {
-                                ExitMsg("删除失败");
+                                ExitMsg({code: msg.code, info: "删除失败"});
                             }
 
                         }
                     });
                     layer.close(index);
                 });
-            } else if (layEvent === 'edit') { //编辑
-                Session('marketing', JSON.stringify(data));
-                layer.open({
-                    title: '编辑',
-                    type: 2,
-                    content: 'marketing-edit.html',
-                    area: ['800px', '600px'],
-                    end: function () {
-                        console.log('xxxxx');
-                        var dd = JSON.parse(Session('marketing'));
-                        obj.update(dd);
-                    }
-                });
-                //xadmin.open('编辑','staff-edit.html?uid=1',800,600)
             }
         });
         form.on('submit(sreach)', function (data) {
-            if (!data.field.username) {
+            if (data.field.uid !== "") {
                 table.reload('demo', {
-                    url: url + "/sysStudent/getall",
+                    url: url + "/api/user/info",
                     page: 1,
                     pageSize: 10,
-                    offset: 0
+                    offset: 0,
+                    where: {
+                        uid: data.field.uid
+                    }
                 });
                 return false;
             }
-            table.reload('demo', {
-                url: url + "/sysStudent/likeall",
-                where: data.field,
-                page: 1,
-                pageSize: 10,
-                offset: 0
-            });
+            // table.reload('demo', {
+            //     url: url + "/sysStudent/likeall",
+            //     where: data.field,
+            //     page: 1,
+            //     pageSize: 10,
+            //     offset: 0
+            // });
+            location.reload();
             return false;
         });
     });
