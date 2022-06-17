@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface UserDriverService {
     List<Tuple2<Driver, String>> getDriverByUid(String uid);
+
+    boolean allocateSpace(String uid, int driverID, String physicalPath);
+
+    void checkAllSpace();
+
+    void checkUserSpace(String uid);
 }

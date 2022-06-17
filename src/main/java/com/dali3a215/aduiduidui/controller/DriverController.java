@@ -52,9 +52,8 @@ public class DriverController {
         long max_size = reqBody.getLongValue(keys[5]);
         String title = reqBody.getString(keys[6]);
         String value = reqBody.getString(keys[7]);
-        int n = driverService.add(name, enable_cache, auto_refresh_cache, enable_search, search_ignore_case, max_size,
-                title, value);
-        if (n == 1) {
+        if (driverService.add(name, enable_cache, auto_refresh_cache, enable_search, search_ignore_case, max_size,
+                title, value)) {
             respResult.setCode(0);
             respResult.setMsg("添加成功");
         } else {
@@ -76,8 +75,7 @@ public class DriverController {
         }
 
         int id = reqBody.getIntValue("id");
-        int n = driverService.delete(id);
-        if (n == 1) {
+        if (driverService.delete(id)) {
             respResult.setCode(0);
             respResult.setMsg("删除成功");
         } else {

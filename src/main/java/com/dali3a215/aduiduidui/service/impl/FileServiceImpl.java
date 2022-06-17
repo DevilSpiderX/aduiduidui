@@ -21,6 +21,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<AduiFile> list(Driver driver, String physicalPath, String path) {
+        if (path == null) path = "/";
         List<AduiFile> resultList = new LinkedList<>();
         Path realPath = Paths.get(driver.getValue(), physicalPath, path);
         if (Files.isDirectory(realPath)) {
