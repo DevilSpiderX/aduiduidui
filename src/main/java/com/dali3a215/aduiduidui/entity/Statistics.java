@@ -6,10 +6,10 @@ import java.io.Serializable;
  * (Statistics)实体类
  *
  * @author makejava
- * @since 2022-06-15 11:34:53
+ * @since 2022-06-17 20:35:42
  */
 public class Statistics implements Serializable {
-    private static final long serialVersionUID = -99546641464532060L;
+    private static final long serialVersionUID = -47015695861116696L;
     
     private Integer id;
     
@@ -20,6 +20,7 @@ public class Statistics implements Serializable {
     private Long downloadSize;
     
     private Long fileSize;
+
 
     public Integer getId() {
         return id;

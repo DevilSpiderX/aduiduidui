@@ -6,10 +6,10 @@ import java.io.Serializable;
  * (UserDriver)实体类
  *
  * @author makejava
- * @since 2022-06-17 10:42:20
+ * @since 2022-06-17 20:35:42
  */
 public class UserDriver implements Serializable {
-    private static final long serialVersionUID = 951135347751226380L;
+    private static final long serialVersionUID = -15914693773580247L;
 
     private Integer id;
 

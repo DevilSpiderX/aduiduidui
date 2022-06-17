@@ -6,22 +6,27 @@ import java.io.Serializable;
  * (SearchCache)实体类
  *
  * @author makejava
- * @since 2022-06-15 11:34:53
+ * @since 2022-06-17 20:35:42
  */
 public class SearchCache implements Serializable {
-    private static final long serialVersionUID = 477955729869588195L;
-
+    private static final long serialVersionUID = -63881651736920502L;
+    
     private Integer id;
-
+    
     private String key;
-
+    
     private String value;
-
+    
+    private Long size;
+    
+    private Integer driveId;
+    
+    private String uid;
+    
+    private Long timestamp;
+    
     private String contentType;
 
-    private Long size;
-
-    private Integer driveId;
 
     public Integer getId() {
         return id;
@@ -47,14 +52,6 @@ public class SearchCache implements Serializable {
         this.value = value;
     }
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
     public Long getSize() {
         return size;
     }
@@ -71,15 +68,41 @@ public class SearchCache implements Serializable {
         this.driveId = driveId;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     @Override
     public String toString() {
         return "SearchCache{" +
                 "id=" + id +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +
-                ", contentType='" + contentType + '\'' +
                 ", size=" + size +
                 ", driveId=" + driveId +
+                ", uid='" + uid + '\'' +
+                ", timestamp=" + timestamp +
+                ", contentType='" + contentType + '\'' +
                 '}';
     }
 }

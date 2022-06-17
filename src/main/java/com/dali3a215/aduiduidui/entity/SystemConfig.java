@@ -6,10 +6,10 @@ import java.io.Serializable;
  * (SystemConfig)实体类
  *
  * @author makejava
- * @since 2022-06-15 11:34:53
+ * @since 2022-06-17 20:35:42
  */
 public class SystemConfig implements Serializable {
-    private static final long serialVersionUID = -41537598324440453L;
+    private static final long serialVersionUID = -38703507922663321L;
     
     private Integer id;
     
@@ -18,6 +18,7 @@ public class SystemConfig implements Serializable {
     private String value;
     
     private String remark;
+
 
     public Integer getId() {
         return id;
