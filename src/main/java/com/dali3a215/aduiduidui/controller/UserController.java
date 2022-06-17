@@ -5,6 +5,7 @@ import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultData;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import com.dali3a215.aduiduidui.entity.User;
+import com.dali3a215.aduiduidui.service.UserDriverService;
 import com.dali3a215.aduiduidui.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,8 @@ import java.util.List;
 public class UserController {
     @Resource(name = "userService")
     private UserService userService;
+    @Resource(name = "userDriverService")
+    private UserDriverService userDriverService;
 
     @PostMapping("/login")
     @ResponseBody
@@ -68,6 +71,7 @@ public class UserController {
             if (userService.register(uid, password, userName, sex, info)) {
                 respResult.setCode(0);
                 respResult.setMsg("注册成功");
+                new Thread(() -> userDriverService.checkUserSpace(uid), "checkUserSpace_" + uid).start();
             } else {
                 respResult.setCode(1);
                 respResult.setMsg("注册失败");

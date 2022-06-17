@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
                 childPaths.forEach(childPath -> {
                     AduiFile file = new AduiFile();
                     file.setName(childPath.getFileName().toString());
-                    file.setPath(childPath.toAbsolutePath().toString());
+                    file.setPath(childPath.toAbsolutePath().toString().replace("\\", "/"));
                     file.setDirectory(Files.isDirectory(childPath));
                     resultList.add(file);
                 });

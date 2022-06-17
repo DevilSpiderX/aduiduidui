@@ -5,6 +5,7 @@ import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultData;
 import com.dali3a215.aduiduidui.entity.Driver;
 import com.dali3a215.aduiduidui.service.DriverService;
+import com.dali3a215.aduiduidui.service.UserDriverService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,8 @@ import javax.annotation.Resource;
 public class DriverController {
     @Resource(name = "driverService")
     private DriverService driverService;
+    @Resource(name = "userDriverService")
+    private UserDriverService userDriverService;
 
     @RequestMapping("/list")
     @ResponseBody
@@ -56,6 +59,7 @@ public class DriverController {
                 title, value)) {
             respResult.setCode(0);
             respResult.setMsg("添加成功");
+            new Thread(() -> userDriverService.checkAllSpace(), "checkAllSpace").start();
         } else {
             respResult.setCode(1);
             respResult.setMsg("添加失败");

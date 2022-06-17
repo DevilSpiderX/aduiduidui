@@ -8,7 +8,6 @@ import com.dali3a215.aduiduidui.exception.NotEnoughSpaceException;
 import com.dali3a215.aduiduidui.service.DriverService;
 import com.dali3a215.aduiduidui.service.UserDriverService;
 import com.dali3a215.aduiduidui.service.UserService;
-import com.dali3a215.aduiduidui.util.AduiCipher;
 import io.vavr.Tuple;
 import io.vavr.Tuple2;
 import org.slf4j.Logger;
@@ -22,7 +21,6 @@ import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,7 +64,7 @@ public class UserDriverServiceImpl implements UserDriverService {
     }
 
     @Override
-    public void checkAllSpace() {
+    public synchronized void checkAllSpace() {
         logger.info("开始检查用户空间，并分配空间");
         for (User user : userService.getUserList()) {
             checkUserSpace(user.getUid());
@@ -75,7 +73,7 @@ public class UserDriverServiceImpl implements UserDriverService {
     }
 
     @Override
-    public void checkUserSpace(String uid) {
+    public synchronized void checkUserSpace(String uid) {
         UserDriver userDriver = new UserDriver();
         userDriver.setUid(uid);
         List<UserDriver> userDriverList = dao.select(userDriver);
@@ -99,18 +97,17 @@ public class UserDriverServiceImpl implements UserDriverService {
                 thatDriver = var;
             }
             if (thatDriver == null) {
-                String msg = String.format("所有驱动器空间都不足%.2f,共%d个驱动器,请添加新的驱动器",
+                String msg = String.format("所有驱动器空间都不足%.2f%%,共%d个驱动器,请添加新的驱动器",
                         (1 - RESERVE_RATIO) * 100, allDriver.size());
                 NotEnoughSpaceException e = new NotEnoughSpaceException(msg);
                 logger.error(e.getMessage(), e);
                 return;
             }
-            String physicalPath = AduiCipher.sha256Encrypt(uid + LocalDateTime.now());
-            Path realPath = Paths.get(thatDriver.getValue(), physicalPath);
+            Path realPath = Paths.get(thatDriver.getValue(), uid);
             File file = realPath.toFile();
             if (!file.exists()) {
                 if (file.mkdir()) {
-                    if (allocateSpace(uid, thatDriver.getId(), physicalPath)) {
+                    if (allocateSpace(uid, thatDriver.getId(), uid)) {
                         logger.info(uid + ":Driver-" + thatDriver.getId() + "分配空间成功");
                     } else {
                         logger.error(uid + ":Driver-" + thatDriver.getId() + "分配空间失败");
@@ -119,7 +116,7 @@ public class UserDriverServiceImpl implements UserDriverService {
                     logger.error(uid + ":Driver-" + thatDriver.getId() + "创建目录失败");
                 }
             } else if (file.isDirectory()) {
-                if (allocateSpace(uid, thatDriver.getId(), physicalPath)) {
+                if (allocateSpace(uid, thatDriver.getId(), uid)) {
                     logger.info(uid + ":Driver-" + thatDriver.getId() + "分配空间成功");
                 } else {
                     logger.error(uid + ":Driver-" + thatDriver.getId() + "分配空间失败");

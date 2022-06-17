@@ -6,30 +6,31 @@ import java.io.Serializable;
  * (Driver)实体类
  *
  * @author makejava
- * @since 2022-06-15 11:34:53
+ * @since 2022-06-17 20:35:42
  */
 public class Driver implements Serializable {
-    private static final long serialVersionUID = -39219902576635890L;
-
+    private static final long serialVersionUID = 215557466279081746L;
+    
     private Integer id;
-
+    
     private String name;
-
+    
     private Boolean enableCache;
-
+    
     private Boolean autoRefreshCache;
-
+    
     private Boolean enableSearch;
-
+    
     private Boolean searchIgnoreCase;
-
+    
     private Long maxSize;
-
+    
     private Long usedSize;
-
+    
     private String title;
-
+    
     private String value;
+
 
     public Integer getId() {
         return id;

@@ -19,6 +19,7 @@ public class AdminFilter implements Filter {
         HttpSession session = ((HttpServletRequest) request).getSession();
         if (!systemConfigService.isAdmin(session)) {
             request.getRequestDispatcher("/error/noAdmin").forward(request, response);
+            return;
         }
         chain.doFilter(request, response);
     }

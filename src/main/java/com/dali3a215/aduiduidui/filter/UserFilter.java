@@ -20,6 +20,7 @@ public class UserFilter implements Filter {
         HttpSession session = ((HttpServletRequest) request).getSession();
         if (!userService.isLogged(session)) {
             request.getRequestDispatcher("/error/userNoLogin").forward(request, response);
+            return;
         }
         chain.doFilter(request, response);
     }
