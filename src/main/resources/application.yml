@@ -10,7 +10,7 @@ bee:
   db:
     dbName: "MySQL"
     driverName: "com.mysql.cj.jdbc.Driver"
-    url: "jdbc:mysql://devilspiderx.ltd:3306/aduiduidui?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai"
+    url: "jdbc:mysql://localhost:3306/aduiduidui?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai"
     username: "aduiduidui"
     password: "123456"
   osql:
