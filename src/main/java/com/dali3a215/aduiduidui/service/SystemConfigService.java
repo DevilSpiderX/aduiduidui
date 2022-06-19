@@ -6,6 +6,10 @@ public interface SystemConfigService {
 
     void init();
 
+    String getValue(String key);
+
+    void setValue(String key, String value, String remark);
+
     String getAdminUid();
 
     void setAdminUid(String uid);
@@ -19,4 +23,8 @@ public interface SystemConfigService {
     void setAdminName(String name);
 
     boolean isAdmin(HttpSession session);
+
+    long getSearchCacheKeepTime();
+
+    void setSearchCacheKeepTime(long keepTime);
 }

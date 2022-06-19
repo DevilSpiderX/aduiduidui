@@ -1,5 +1,6 @@
 package com.dali3a215.aduiduidui.configuration;
 
+import com.dali3a215.aduiduidui.service.SearchCacheService;
 import com.dali3a215.aduiduidui.service.StatisticsService;
 import com.dali3a215.aduiduidui.service.SystemConfigService;
 import com.dali3a215.aduiduidui.service.UserDriverService;
@@ -16,11 +17,15 @@ public class SystemInitializer implements CommandLineRunner {
     private UserDriverService userDriverService;
     @Resource(name = "statisticsService")
     private StatisticsService statisticsService;
+    @Resource(name = "searchCacheService")
+    private SearchCacheService searchCacheService;
 
     @Override
     public void run(String... args) throws Exception {
         systemConfigService.init();
         userDriverService.checkAllSpace();
         statisticsService.init();
+        searchCacheService.cleanCacheByTime();
+        searchCacheService.generateCache();
     }
 }

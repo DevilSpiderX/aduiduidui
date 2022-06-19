@@ -48,6 +48,18 @@ public class UserDriverServiceImpl implements UserDriverService {
     }
 
     @Override
+    public List<Tuple2<User, String>> getUserByDriveId(int driveId) {
+        List<Tuple2<User, String>> result = new LinkedList<>();
+        UserDriver userDriver = new UserDriver();
+        userDriver.setDriveId(driveId);
+        List<UserDriver> userDrivers = dao.select(userDriver);
+        for (UserDriver var : userDrivers) {
+            result.add(Tuple.of(userService.getUserByUid(var.getUid()), var.getPhysicalPath()));
+        }
+        return result;
+    }
+
+    @Override
     public boolean allocateSpace(String uid, int driverID, String physicalPath) {
         Driver driver = driverService.get(driverID);
 
