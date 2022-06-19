@@ -17,33 +17,9 @@ import java.util.List;
 public class SystemConfigServiceImpl implements SystemConfigService {
     private final static Logger logger = LoggerFactory.getLogger(SystemConfigServiceImpl.class);
     private final SuidRich dao = BeeFactoryHelper.getSuidRich();
-    private final List<String> baseKeys = List.of("adminName", "adminUid", "adminPassword");
-    private final List<String> baseValues = List.of("admin", "admin", "123456");
-    private final List<String> baseRemarks = List.of("管理员名", "管理员账号", "管理员密码");
-
-    public String getValue(String key) {
-        SystemConfig qConfig = new SystemConfig();
-        qConfig.setKey(key);
-        List<SystemConfig> list = dao.select(qConfig);
-        if (list.isEmpty()) {
-            return null;
-        }
-        return list.get(0).getValue();
-    }
-
-    private void setValue(String key, String value, String remark) {
-        SystemConfig config = new SystemConfig();
-        config.setKey(key);
-        if (dao.exist(config)) {
-            config.setValue(value);
-            config.setRemark(remark);
-            dao.updateBy(config, "key", IncludeType.INCLUDE_EMPTY);
-        } else {
-            config.setValue(value);
-            config.setRemark(remark);
-            dao.insert(config, IncludeType.INCLUDE_EMPTY);
-        }
-    }
+    private final List<String> baseKeys = List.of("adminName", "adminUid", "adminPassword", "searchCacheKeepTime");
+    private final List<String> baseValues = List.of("admin", "admin", "123456", String.valueOf(24 * 60 * 60 * 1000));
+    private final List<String> baseRemarks = List.of("管理员名", "管理员账号", "管理员密码", "搜索缓存保留时间");
 
     @Override
     public void init() {
@@ -53,6 +29,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
             String value = baseValues.get(i);
             String remark = baseRemarks.get(i);
             SystemConfig config = new SystemConfig();
+            config.setId(i + 1);
             config.setKey(key);
             if (!dao.exist(config)) {
                 config.setValue(value);
@@ -65,6 +42,32 @@ public class SystemConfigServiceImpl implements SystemConfigService {
         } else {
             int n = dao.insert(insertList);
             logger.info("已初始化{}个系统参数", n);
+        }
+    }
+
+    @Override
+    public String getValue(String key) {
+        SystemConfig qConfig = new SystemConfig();
+        qConfig.setKey(key);
+        List<SystemConfig> list = dao.select(qConfig);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0).getValue();
+    }
+
+    @Override
+    public void setValue(String key, String value, String remark) {
+        SystemConfig config = new SystemConfig();
+        config.setKey(key);
+        if (dao.exist(config)) {
+            config.setValue(value);
+            config.setRemark(remark);
+            dao.updateBy(config, "key", IncludeType.INCLUDE_EMPTY);
+        } else {
+            config.setValue(value);
+            config.setRemark(remark);
+            dao.insert(config, IncludeType.INCLUDE_EMPTY);
         }
     }
 
@@ -102,4 +105,16 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     public boolean isAdmin(HttpSession session) {
         return session.getAttribute("admin") != null && (Boolean) session.getAttribute("admin");
     }
+
+    @Override
+    public long getSearchCacheKeepTime() {
+        return Long.parseLong(getValue("searchCacheKeepTime"));
+    }
+
+    @Override
+    public void setSearchCacheKeepTime(long keepTime) {
+        setValue("searchCacheKeepTime", String.valueOf(keepTime), null);
+    }
+
+
 }

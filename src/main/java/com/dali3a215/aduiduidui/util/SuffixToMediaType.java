@@ -34,4 +34,10 @@ public class SuffixToMediaType {
             return MediaType.APPLICATION_OCTET_STREAM;
         }
     }
+
+    public static MediaType getMediaTypeByName(String fileName) {
+        int n = fileName.lastIndexOf(".");
+        String fileSuffix = n == -1 ? null : fileName.substring(n);
+        return SuffixToMediaType.getMediaType(fileSuffix);
+    }
 }
