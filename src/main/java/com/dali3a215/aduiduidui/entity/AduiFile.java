@@ -29,7 +29,7 @@ public class AduiFile implements Serializable {
     }
 
     public String getPath() {
-        return path.toString().replace("\\", "/");
+        return "/" + path.toString().replace("\\", "/");
     }
 
     public void setPath(Path path) {
@@ -53,6 +53,7 @@ public class AduiFile implements Serializable {
     }
 
     public String getContentType() {
+        if (contentType == null) return "";
         return contentType.toString();
     }
 

@@ -69,7 +69,6 @@ public class SearchCacheServiceImpl implements SearchCacheService {
                         if (Objects.equals(searchCache.getSize(), l.get(0).getSize())) continue;
                         searchCache.setId(l.get(0).getId());
                         updateCacheList.add(searchCache);
-                        cacheList.remove(searchCache);
                     } else {
                         if (l.size() > 1) dao.delete(new SearchCache(), con);
                         insertCacheList.add(searchCache);

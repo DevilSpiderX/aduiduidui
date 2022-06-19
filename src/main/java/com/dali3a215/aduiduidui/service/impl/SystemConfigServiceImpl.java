@@ -2,6 +2,7 @@ package com.dali3a215.aduiduidui.service.impl;
 
 import com.dali3a215.aduiduidui.entity.SystemConfig;
 import com.dali3a215.aduiduidui.service.SystemConfigService;
+import com.dali3a215.aduiduidui.util.AduiCipher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     private final static Logger logger = LoggerFactory.getLogger(SystemConfigServiceImpl.class);
     private final SuidRich dao = BeeFactoryHelper.getSuidRich();
     private final List<String> baseKeys = List.of("adminName", "adminUid", "adminPassword", "searchCacheKeepTime");
-    private final List<String> baseValues = List.of("admin", "admin", "123456", String.valueOf(24 * 60 * 60 * 1000));
+    private final List<String> baseValues = List.of("admin", "admin",//默认密码是123456
+            "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", String.valueOf(24 * 60 * 60 * 1000));
     private final List<String> baseRemarks = List.of("管理员名", "管理员账号", "管理员密码", "搜索缓存保留时间");
 
     @Override
@@ -88,7 +90,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     @Override
     public void setAdminPassword(String password) {
-        setValue("adminPassword", password, null);
+        setValue("adminPassword", AduiCipher.sha256Encrypt(password), null);
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.teasoft.bee.osql.SuidRich;
 import org.teasoft.honey.osql.core.BeeFactoryHelper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.FileAlreadyExistsException;
@@ -47,22 +46,9 @@ public class DriverServiceImpl implements DriverService {
         driver.setValue(value);
         boolean result;
         Path path = Paths.get(value);
-        Path parentPath = path.getParent();
-        if (parentPath.toFile().exists()) {
-            File file = path.toFile();
-            if (!file.exists()) {
-                if (file.mkdir()) {
-                    result = dao.insert(driver) == 1;
-                    if (result) {
-                        logger.info("新建驱动器成功");
-                    } else {
-                        logger.error("新建驱动器失败");
-                    }
-                } else {
-                    result = false;
-                    logger.error("创建驱动器目录失败");
-                }
-            } else if (file.isDirectory()) {
+        File file = path.toFile();
+        if (!file.exists()) {
+            if (file.mkdirs()) {
                 result = dao.insert(driver) == 1;
                 if (result) {
                     logger.info("新建驱动器成功");
@@ -71,12 +57,18 @@ public class DriverServiceImpl implements DriverService {
                 }
             } else {
                 result = false;
-                FileAlreadyExistsException e = new FileAlreadyExistsException(file.toString());
-                logger.error(e.getMessage(), e);
+                logger.error("创建驱动器目录失败");
+            }
+        } else if (file.isDirectory()) {
+            result = dao.insert(driver) == 1;
+            if (result) {
+                logger.info("新建驱动器成功");
+            } else {
+                logger.error("新建驱动器失败");
             }
         } else {
             result = false;
-            FileNotFoundException e = new FileNotFoundException(parentPath.toString());
+            FileAlreadyExistsException e = new FileAlreadyExistsException(file.toString());
             logger.error(e.getMessage(), e);
         }
         return result;

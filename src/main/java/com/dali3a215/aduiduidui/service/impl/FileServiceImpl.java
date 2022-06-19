@@ -53,7 +53,7 @@ public class FileServiceImpl implements FileService {
                         file.setPath(childPath.subpath(userPath.getNameCount(), childPath.getNameCount()));
                         file.setDriver(driver);
                         file.setDirectory(Files.isDirectory(childPath));
-                        file.setContentType(SuffixToMediaType.getMediaTypeByName(fileName));
+                        if (!file.isDirectory()) file.setContentType(SuffixToMediaType.getMediaTypeByName(fileName));
                         try {
                             file.setSize(Files.size(childPath));
                         } catch (IOException e) {
@@ -72,6 +72,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<AduiFile> find(String uid, String fileName) {
         List<AduiFile> resultList = new LinkedList<>();
+        if (fileName == null) return resultList;
         for (SearchCache cache : searchCacheService.get(fileName, uid)) {
             AduiFile file = new AduiFile();
             file.setName(fileName);
@@ -139,15 +140,16 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean remove(String uid, String path) {
         if (path.startsWith("/")) path = path.substring(1);
+        boolean result = true;
         for (Tuple2<Driver, String> tu : userDriverService.getDriverByUid(uid)) {
             Driver driver = tu._1;
             String physicalPath = tu._2;
             Path realPath = Paths.get(driver.getValue(), physicalPath, path);
             boolean flag = _removeFile(realPath);
             if (!flag) flag = _removeDirectory(realPath);
-            if (!flag) return false;
+            if (!flag) result = false;
         }
-        return true;
+        return result;
     }
 
     private boolean _removeFile(Path realPath) {
@@ -237,9 +239,10 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean read(HttpServletResponse resp, String uid, String fileName, String path) {
+    public boolean read(HttpServletResponse resp, String uid, String path) {
         if (resp == null || uid == null || path == null) return false;
         if (path.startsWith("/")) path = path.substring(1);
+        String fileName = Paths.get(path).getFileName().toString();
         Driver driver = null;
         long contentLength = 0;
         List<SearchCache> cacheList = searchCacheService.get(fileName, uid);
@@ -282,6 +285,10 @@ public class FileServiceImpl implements FileService {
             }
         }
         if (realPath == null) return false;
+        if (Files.isDirectory(realPath)) {
+            logger.info("用户{}下载的是文件夹({})", uid, realPath.toString().replace(File.separatorChar, '/'));
+            return false;
+        }
         //这里开始读取文件到输出流中
         byte[] buff = new byte[1 << 14];
         long size = 0;

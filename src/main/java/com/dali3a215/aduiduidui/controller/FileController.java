@@ -5,7 +5,6 @@ import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import com.dali3a215.aduiduidui.entity.AduiFile;
 import com.dali3a215.aduiduidui.service.FileService;
-import com.dali3a215.aduiduidui.service.UserDriverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -18,14 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/file")
 public class FileController {
     private final Logger logger = LoggerFactory.getLogger(FileController.class);
-
-    @Resource(name = "userDriverService")
-    private UserDriverService userDriverService;
     @Resource(name = "fileService")
     private FileService fileService;
 
@@ -98,13 +96,68 @@ public class FileController {
         return respResult;
     }
 
-    @GetMapping("/download/{fileName}")
-    public void download(@PathVariable String fileName, @RequestParam String path, HttpServletResponse resp,
-                         HttpSession session) throws IOException {
+    @GetMapping("/download/*")
+    public void download(@RequestParam String path, HttpServletResponse resp, HttpSession session) throws IOException {
         String uid = (String) session.getAttribute("uid");
-        boolean flag = fileService.read(resp, uid, fileName, path);
+        boolean flag = fileService.read(resp, uid, path);
         if (!flag) {
             resp.sendError(404);
         }
+    }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public ResultMap<Void> delete(@RequestBody JSONObject reqBody, HttpSession session) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        //请求参数需要 path
+        String uid = (String) session.getAttribute("uid");
+        String path = reqBody.getString("path");
+        if (fileService.remove(uid, path)) {
+            respResult.setCode(0);
+            respResult.setMsg("删除成功");
+        } else {
+            respResult.setCode(1);
+            respResult.setMsg("删除失败");
+        }
+        return respResult;
+    }
+
+    @GetMapping("/find")
+    @ResponseBody
+    public ResultArray<AduiFile> findGet(@RequestParam String fileName, HttpSession session) {
+        ResultArray<AduiFile> respResult = new ResultArray<>();
+        //请求参数需要 fileName
+        String uid = (String) session.getAttribute("uid");
+        List<AduiFile> list = fileService.find(uid, fileName);
+        if (list.isEmpty()) {
+            respResult.setCode(1);
+            respResult.setMsg("搜索不到文件");
+            respResult.setData(new LinkedList<>());
+        } else {
+            respResult.setCode(0);
+            respResult.setMsg("搜索成功");
+            respResult.setData(list);
+        }
+        return respResult;
+    }
+
+    @PostMapping("/find")
+    @ResponseBody
+    public ResultArray<AduiFile> findPost(@RequestBody JSONObject reqBody, HttpSession session) {
+        //请求参数需要 fileName
+        String fileName = reqBody.getString("fileName");
+        return findGet(fileName, session);
+    }
+
+    @GetMapping("/search")
+    @ResponseBody
+    public ResultArray<AduiFile> searchGet(@RequestParam String fileName, HttpSession session) {
+        return findGet(fileName, session);
+    }
+
+    @PostMapping("/search")
+    @ResponseBody
+    public ResultArray<AduiFile> searchPost(@RequestBody JSONObject reqBody, HttpSession session) {
+        return findPost(reqBody, session);
     }
 }

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(filterName = "AdminFilter", urlPatterns = {"/api/user/delete"})
+@WebFilter(filterName = "AdminFilter", urlPatterns = {"/api/user/delete", "/api/user/list", "/api/driver/*"})
 public class AdminFilter implements Filter {
     @Resource(name = "systemConfigService")
     private SystemConfigService systemConfigService;
