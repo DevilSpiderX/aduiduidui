@@ -5,8 +5,11 @@ import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultData;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import com.dali3a215.aduiduidui.entity.User;
+import com.dali3a215.aduiduidui.service.FileService;
 import com.dali3a215.aduiduidui.service.UserDriverService;
 import com.dali3a215.aduiduidui.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +20,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/user")
 public class UserController {
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Resource(name = "userService")
     private UserService userService;
     @Resource(name = "userDriverService")
     private UserDriverService userDriverService;
+    @Resource(name = "fileService")
+    private FileService fileService;
 
     @PostMapping("/login")
     @ResponseBody
@@ -130,6 +136,9 @@ public class UserController {
         ResultMap<Void> respResult = new ResultMap<>();
         String uid = reqJson.getString("uid");
         if (userService.delete(uid)) {
+            if (!fileService.remove(uid, "")) {
+                logger.error("用户{}文件夹删除失败，请手动删除", uid);
+            }
             respResult.setCode(0);
             respResult.setMsg("删除成功");
         } else {

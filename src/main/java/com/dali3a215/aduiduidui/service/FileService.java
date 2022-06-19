@@ -31,6 +31,6 @@ public interface FileService {
      */
     int write(InputStream originIn, String uid, String path, long contentLength, MediaType contentType, boolean cover);
 
-    boolean read(HttpServletResponse resp, String uid, String fileName, String path);
+    boolean read(HttpServletResponse resp, String uid, String path);
 
 }

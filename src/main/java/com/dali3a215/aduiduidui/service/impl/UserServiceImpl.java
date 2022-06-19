@@ -5,8 +5,10 @@ import com.dali3a215.aduiduidui.service.UserService;
 import com.dali3a215.aduiduidui.util.AduiCipher;
 import org.springframework.stereotype.Service;
 import org.teasoft.bee.osql.IncludeType;
+import org.teasoft.bee.osql.Op;
 import org.teasoft.bee.osql.SuidRich;
 import org.teasoft.honey.osql.core.BeeFactoryHelper;
+import org.teasoft.honey.osql.core.ConditionImpl;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -66,7 +68,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean delete(String uid) {
-        return false;
+        int n = dao.delete(new User(), new ConditionImpl().op("uid", Op.eq, uid));
+        return n == 1;
     }
 
     private User initNewUser(String uid, String password, String userName, String sex, String info) {

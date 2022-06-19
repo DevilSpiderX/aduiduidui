@@ -3,6 +3,7 @@ package com.dali3a215.aduiduidui.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import com.dali3a215.aduiduidui.service.SystemConfigService;
+import com.dali3a215.aduiduidui.util.AduiCipher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +29,7 @@ public class AdminController {
         if (uid != null && password != null) {
             String adminUid = systemConfigService.getAdminUid();
             String adminPassword = systemConfigService.getAdminPassword();
-            if (uid.equals(adminUid) && password.equals(adminPassword)) {
+            if (uid.equals(adminUid) && AduiCipher.sha256Encrypt(password).equals(adminPassword)) {
                 respResult.setCode(0);
                 respResult.setMsg("登录成功");
                 respResult.setData(new HashMap<>());

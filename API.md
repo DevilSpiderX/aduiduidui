@@ -312,10 +312,8 @@
 
 ### 请求
 
-```json
-{
-  "path": "文件虚拟地址"
-}
+```text
+/api/file/download/{fileName}?path=文件虚拟地址
 ```
 
 ### 响应
