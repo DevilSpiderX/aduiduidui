@@ -17,6 +17,7 @@ import org.teasoft.honey.osql.core.BeeFactoryHelper;
 import org.teasoft.honey.osql.core.ConditionImpl;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,6 +25,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 @Service("searchCacheService")
@@ -121,11 +123,10 @@ public class SearchCacheServiceImpl implements SearchCacheService {
     }
 
     @Override
-    public boolean addCache(String key, String value, MediaType contentType, long size, String uid, int driveId) {
+    public boolean add(String key, String value, MediaType contentType, long size, String uid, int driveId) {
         long nowTimestamp = System.currentTimeMillis();
         SearchCache searchCache = new SearchCache();
         searchCache.setKey(key);
-        if (value.startsWith("/")) value = value.substring(1);
         searchCache.setValue(value);
         searchCache.setContentType(contentType.toString());
         searchCache.setUid(uid);
@@ -145,6 +146,53 @@ public class SearchCacheServiceImpl implements SearchCacheService {
             n = dao.insert(searchCache);
         }
         return n == 1;
+    }
+
+    @Override
+    public boolean remove(String value, String uid) {
+        boolean result;
+        SearchCache qCache = new SearchCache();
+        qCache.setValue(value);
+        qCache.setUid(uid);
+        int n = dao.delete(qCache);
+        result = n > 0;
+        if (n > 1) {
+            logger.error("存储异常，用户{}存在相同value的缓存({})", uid, value);
+        } else if (n < 1) {
+            result = true;
+            for (Tuple2<Driver, String> tu : userDriverService.getDriverByUid(uid)) {
+                Path userPath = Paths.get(tu._1.getValue(), tu._2);
+                Path realPath = Paths.get(tu._1.getValue(), tu._2, value);
+                if (!_remove(realPath, userPath, uid)) {
+                    result = false;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean _remove(Path realPath, Path userPath, String uid) {
+        AtomicBoolean result = new AtomicBoolean(true);
+        if (Files.isDirectory(realPath)) {
+            try (Stream<Path> childPaths = Files.list(realPath)) {
+                childPaths.forEach(childPath -> result.set(_remove(childPath, userPath, uid)));
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                result.set(false);
+            }
+        } else {
+            String value = realPath.subpath(userPath.getNameCount(), realPath.getNameCount())
+                    .toString().replace(File.separatorChar, '/');
+            SearchCache qCache = new SearchCache();
+            qCache.setValue(value);
+            qCache.setUid(uid);
+            int n = dao.delete(qCache);
+            if (n > 1) {
+                logger.error("存储异常，用户{}存在相同value的缓存({})", uid, value);
+            }
+            result.set(n > 0);
+        }
+        return result.get();
     }
 
     @Override

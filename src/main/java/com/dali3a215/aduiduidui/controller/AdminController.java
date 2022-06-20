@@ -56,4 +56,62 @@ public class AdminController {
         respResult.setMsg("退出成功");
         return respResult;
     }
+
+    @PostMapping("/adminUpdate")
+    @ResponseBody
+    public ResultMap<Void> adminUpdate(@RequestBody JSONObject reqBody) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        String adminName = reqBody.getString("adminName");
+        String adminUid = reqBody.getString("adminUid");
+        String adminPassword = reqBody.getString("adminPassword");
+        systemConfigService.setAdminName(adminName);
+        systemConfigService.setAdminUid(adminUid);
+        systemConfigService.setAdminPassword(adminPassword);
+        respResult.setCode(0);
+        respResult.setMsg("修改成功");
+        return respResult;
+    }
+
+    @PostMapping("/updateSearchCacheKeepTime")
+    @ResponseBody
+    public ResultMap<Void> updateSearchCacheKeepTime(@RequestBody JSONObject reqBody) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        long time = reqBody.getLongValue("time");
+        systemConfigService.setSearchCacheKeepTime(time);
+        respResult.setCode(0);
+        respResult.setMsg("修改成功");
+        return respResult;
+    }
+
+    @PostMapping("/setSystemConfig")
+    @ResponseBody
+    public ResultMap<Void> setSystemConfig(@RequestBody JSONObject reqBody) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        String key = reqBody.getString("key");
+        String value = reqBody.getString("value");
+        String remark = reqBody.getString("remark");
+        systemConfigService.setValue(key, value, remark);
+        respResult.setCode(0);
+        respResult.setMsg("添加成功");
+        return respResult;
+    }
+
+    @PostMapping("/removeSystemConfig")
+    @ResponseBody
+    public ResultMap<Void> removeSystemConfig(@RequestBody JSONObject reqBody) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        String key = reqBody.getString("key");
+        int n = systemConfigService.remove(key);
+        if (n == 0) {
+            respResult.setCode(0);
+            respResult.setMsg("删除成功");
+        } else if (n == 1) {
+            respResult.setCode(1);
+            respResult.setMsg("删除失败");
+        } else if (n == 2) {
+            respResult.setCode(2);
+            respResult.setMsg("禁止删除基础配置");
+        }
+        return respResult;
+    }
 }

@@ -126,7 +126,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean exist(String uid, String path) {
         if (path == null) throw new NullPointerException("Filepath is null");
-        if (path.startsWith("/")) path = path.substring(1);
         boolean result = false;
         for (Tuple2<Driver, String> tu : userDriverService.getDriverByUid(uid)) {
             Driver driver = tu._1;
@@ -139,7 +138,6 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public boolean remove(String uid, String path) {
-        if (path.startsWith("/")) path = path.substring(1);
         boolean result = true;
         for (Tuple2<Driver, String> tu : userDriverService.getDriverByUid(uid)) {
             Driver driver = tu._1;
@@ -185,7 +183,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public int write(InputStream originIn, String uid, String path, long contentLength, MediaType contentType, boolean cover) {
         if (originIn == null || uid == null || path == null) return 2;
-        if (path.startsWith("/")) path = path.substring(1);
 
         //检查文件是否存在
         if (exist(uid, path)) {
@@ -214,6 +211,17 @@ public class FileServiceImpl implements FileService {
             return 3;
         }
 
+        Path parentPath = realPath.getParent();
+        if (!Files.exists(parentPath)) {
+            try {
+                Files.createDirectories(parentPath);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                return 1;
+            }
+        }
+
+
         //这里开始写入到文件中
         byte[] buff = new byte[1 << 14];
         long size = 0;
@@ -233,7 +241,9 @@ public class FileServiceImpl implements FileService {
         if (driver.getEnableCache()) {
             String fileName = realPath.getFileName().toString();
             Path relativePath = Paths.get(path);
-            searchCacheService.addCache(fileName, relativePath.toString(), contentType, size, uid, driver.getId());
+            String value = relativePath.toString().replace(File.separatorChar, '/');
+            if (value.startsWith("/")) value = value.substring(1);
+            searchCacheService.add(fileName, value, contentType, size, uid, driver.getId());
         }
         return 0;
     }
@@ -241,7 +251,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean read(HttpServletResponse resp, String uid, String path) {
         if (resp == null || uid == null || path == null) return false;
-        if (path.startsWith("/")) path = path.substring(1);
         String fileName = Paths.get(path).getFileName().toString();
         Driver driver = null;
         long contentLength = 0;
@@ -304,6 +313,20 @@ public class FileServiceImpl implements FileService {
                 size += len;
             }
         } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean createDirectory(String path, String uid) {
+        try {
+            Tuple2<Driver, String> tu = userDriverService.getDriverByUid(uid).get(0);
+            if (path.startsWith("/")) path = path.substring(1);
+            Path realPath = Paths.get(tu._1.getValue(), tu._2, path);
+            Files.createDirectories(realPath);
+        } catch (IndexOutOfBoundsException | IOException e) {
             logger.error(e.getMessage(), e);
             return false;
         }

@@ -11,7 +11,9 @@ public interface SearchCacheService {
 
     void generateCache();
 
-    boolean addCache(String key, String value, MediaType contentType, long size, String uid, int driveId);
+    boolean add(String key, String value, MediaType contentType, long size, String uid, int driveId);
+
+    boolean remove(String value, String uid);
 
     void cleanCacheByTime();
 

@@ -22,7 +22,7 @@ public interface FileService {
      *
      * @param originIn      远程输入流
      * @param uid           用户id
-     * @param path          要上传的文件的相对路径
+     * @param path          要上传的文件的相对路径，请不要以<code>/</code>开头
      * @param contentLength 远程文件的长度
      * @param contentType   远程文件的类型
      * @param cover         覆盖已存在的文件
@@ -32,5 +32,7 @@ public interface FileService {
     int write(InputStream originIn, String uid, String path, long contentLength, MediaType contentType, boolean cover);
 
     boolean read(HttpServletResponse resp, String uid, String path);
+
+    boolean createDirectory(String path, String uid);
 
 }

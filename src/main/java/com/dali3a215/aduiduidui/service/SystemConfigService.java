@@ -10,6 +10,8 @@ public interface SystemConfigService {
 
     void setValue(String key, String value, String remark);
 
+    int remove(String key);
+
     String getAdminUid();
 
     void setAdminUid(String uid);
