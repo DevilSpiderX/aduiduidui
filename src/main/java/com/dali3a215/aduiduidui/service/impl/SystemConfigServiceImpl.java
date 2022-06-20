@@ -49,6 +49,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     @Override
     public String getValue(String key) {
+        if (key == null) return "";
         SystemConfig qConfig = new SystemConfig();
         qConfig.setKey(key);
         List<SystemConfig> list = dao.select(qConfig);
@@ -60,6 +61,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     @Override
     public void setValue(String key, String value, String remark) {
+        if (key == null || (value == null && remark == null)) return;
         SystemConfig config = new SystemConfig();
         config.setKey(key);
         if (dao.exist(config)) {
@@ -72,6 +74,19 @@ public class SystemConfigServiceImpl implements SystemConfigService {
             dao.insert(config, IncludeType.INCLUDE_EMPTY);
         }
     }
+
+    @Override
+    public int remove(String key) {
+        if (baseKeys.contains(key)) {
+            return 2;
+        }
+        SystemConfig config = new SystemConfig();
+        config.setKey(key);
+        int n = dao.delete(config);
+        if (n != 1) return 1;
+        return 0;
+    }
+
 
     @Override
     public String getAdminUid() {
@@ -90,6 +105,7 @@ public class SystemConfigServiceImpl implements SystemConfigService {
 
     @Override
     public void setAdminPassword(String password) {
+        if (password == null) return;
         setValue("adminPassword", AduiCipher.sha256Encrypt(password), null);
     }
 

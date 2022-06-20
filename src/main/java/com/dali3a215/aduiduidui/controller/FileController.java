@@ -5,6 +5,7 @@ import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
 import com.dali3a215.aduiduidui.entity.AduiFile;
 import com.dali3a215.aduiduidui.service.FileService;
+import com.dali3a215.aduiduidui.service.SearchCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +29,8 @@ public class FileController {
     private final Logger logger = LoggerFactory.getLogger(FileController.class);
     @Resource(name = "fileService")
     private FileService fileService;
+    @Resource(name = "searchCacheService")
+    private SearchCacheService searchCacheService;
 
     @GetMapping("/list")
     @ResponseBody
@@ -53,6 +58,8 @@ public class FileController {
             InputStream in = req.getInputStream();
             String uid = (String) session.getAttribute("uid");
             String path = req.getHeader("path");
+            path = URLDecoder.decode(path, StandardCharsets.UTF_8);
+            if (path.startsWith("/")) path = path.substring(1);
             long contentLength = req.getContentLengthLong();
             MediaType mediaType = req.getContentType() == null ? null : MediaType.parseMediaType(req.getContentType());
             boolean cover = Boolean.parseBoolean(req.getHeader("cover"));
@@ -99,6 +106,7 @@ public class FileController {
     @GetMapping("/download/*")
     public void download(@RequestParam String path, HttpServletResponse resp, HttpSession session) throws IOException {
         String uid = (String) session.getAttribute("uid");
+        if (path.startsWith("/")) path = path.substring(1);
         boolean flag = fileService.read(resp, uid, path);
         if (!flag) {
             resp.sendError(404);
@@ -112,6 +120,8 @@ public class FileController {
         //请求参数需要 path
         String uid = (String) session.getAttribute("uid");
         String path = reqBody.getString("path");
+        if (path.startsWith("/")) path = path.substring(1);
+        searchCacheService.remove(path, uid);
         if (fileService.remove(uid, path)) {
             respResult.setCode(0);
             respResult.setMsg("删除成功");
@@ -159,5 +169,27 @@ public class FileController {
     @ResponseBody
     public ResultArray<AduiFile> searchPost(@RequestBody JSONObject reqBody, HttpSession session) {
         return findPost(reqBody, session);
+    }
+
+    @PostMapping("/mkdir")
+    @ResponseBody
+    public ResultMap<Void> mkdir(@RequestBody JSONObject reqBody, HttpSession session) {
+        ResultMap<Void> respResult = new ResultMap<>();
+        String path = reqBody.getString("path");
+        if (path == null) {
+            respResult.setCode(2);
+            respResult.setMsg("path参数为空");
+            return respResult;
+        }
+        String uid = (String) session.getAttribute("uid");
+        if (path.startsWith("/")) path = path.substring(1);
+        if (fileService.createDirectory(path, uid)) {
+            respResult.setCode(0);
+            respResult.setMsg("创建成功");
+        } else {
+            respResult.setCode(1);
+            respResult.setMsg("创建失败");
+        }
+        return respResult;
     }
 }
