@@ -10,6 +10,7 @@
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link rel="stylesheet" href="./css/font.css">
     <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="./assets/css/font-awesome.css">
     <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
     <script src="./js/jquery.min.js" type="text/javascript"></script>
     <script src="./lib/layui/layui.js" charset="utf-8"></script>
@@ -52,12 +53,25 @@
         <ul id="nav">
 
             <li id="user1">
-                <a onclick="xadmin.add_tab('用户管理','marketing-list.html')">
-                    <i class="iconfont left-nav-li" lay-tips="用户管理">&#xe726;</i>
+                <a onclick="xadmin.add_tab('用户管理','user-list.html')">
+                    <i class="layui-icon left-nav-li" lay-tips="用户管理">&#xe613;</i>
                     <cite>用户管理</cite>
                 </a>
             </li>
 
+            <li id="driver1">
+                <a onclick="xadmin.add_tab('驱动器管理','driver-list.html')">
+                    <i class="fa fa-hdd-o left-nav-li" lay-tips="驱动器管理"></i>
+                    <cite>驱动器管理</cite>
+                </a>
+            </li>
+
+            <li id="system-config1">
+                <a onclick="xadmin.add_tab('系统配置','system-config-list.html')">
+                    <i class="layui-icon left-nav-li" lay-tips="系统配置">&#xe614;</i>
+                    <cite>系统配置</cite>
+                </a>
+            </li>
         </ul>
     </div>
 </div>
@@ -115,14 +129,14 @@
     function adminExit() {
         var domain = window.location.host;
         $.ajax({
-            url: url + "/sysAdmin/logout",
-            type: "get",
+            url: url + "/api/admin/logout",
+            type: "post",
             data: {
                 origin: domain
             },
             dataType: "json",
             success: function (msg) {
-                if (msg.code === 1) {
+                if (msg.code === 0) {
                     sessionStorage.removeItem("user");
                     location.href = './login.html';
                 } else {
@@ -179,7 +193,7 @@
 <!--                        // $("#user2").html("");-->
 <!--                    }else if(json.data[0]==1){-->
 <!--                        $("#nav").prepend("<li id=\"user1\">\n" +-->
-<!--                            "                        <a onclick=\"xadmin.add_tab('用户管理','marketing-list.html')\">\n" +-->
+<!--                            "                        <a onclick=\"xadmin.add_tab('用户管理','user-list.html')\">\n" +-->
 <!--                            "                            <i class=\"iconfont left-nav-li\" lay-tips=\"用户管理\">&#xe726;</i>\n" +-->
 <!--                            "                            <cite>用户管理</cite>\n" +-->
 <!--                            "                            </a>\n" +-->

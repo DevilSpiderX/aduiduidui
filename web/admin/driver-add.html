@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html class="x-admin-sm" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>啊对网盘后台管理界面</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script src="./js/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>驱动器名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="enable_cache1" class="layui-form-label">
+                    <span class="x-red">*</span>是否开启缓存
+                </label>
+                <div class="layui-input-inline">
+                    是<input type="radio" id="enable_cache1" name="enable_cache" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="true" checked>
+                    否<input type="radio" id="enable_cache2" name="enable_cache" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="false">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="autoRefreshCache1" class="layui-form-label">
+                    <span class="x-red">*</span>是否自动刷新缓存
+                </label>
+                <div class="layui-input-inline">
+                    是<input type="radio" id="autoRefreshCache1" name="auto_refresh_cache" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="true" checked>
+                    否<input type="radio" id="autoRefreshCache2" name="auto_refresh_cache" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="false">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="enableSearch1" class="layui-form-label">
+                    <span class="x-red">*</span>是否开启搜索
+                </label>
+                <div class="layui-input-inline">
+                    是<input type="radio" id="enableSearch1" name="enable_search" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="true" checked>
+                    否<input type="radio" id="enableSearch2" name="enable_search" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="false">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="searchIgnoreCase1" class="layui-form-label">
+                    <span class="x-red">*</span>搜索是否忽略大小写
+                </label>
+                <div class="layui-input-inline">
+                    是<input type="radio" id="searchIgnoreCase1" name="search_ignore_case" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="true" checked>
+                    否<input type="radio" id="searchIgnoreCase2" name="search_ignore_case" lay-verify="required"
+                            autocomplete="off" class="layui-input" value="false">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="maxSize" class="layui-form-label">
+                    <span class="x-red">*</span>驱动器最大容量
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" id="maxSize" name="max_size" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                    <select id="maxSizeUnit" name="maxSizeUnit">
+                        <option value="B">B</option>
+                        <option value="KB">KB</option>
+                        <option value="MB">MB</option>
+                        <option value="GB" selected>GB</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="title" class="layui-form-label">
+                    <span class="x-red">*</span>驱动器地址描述
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="title" name="title" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="文件路径">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="value" class="layui-form-label">
+                    <span class="x-red">*</span>驱动器地址
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="value" name="value" lay-verify="required"
+                           autocomplete="off" class="layui-input" placeholder="分隔符请使用'/'">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="addButton" class="layui-form-label">
+                </label>
+                <button id="addButton" class="layui-btn" lay-filter="add" lay-submit="">
+                    添加
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'layer', 'laydate'], function () {
+        $ = layui.jquery;
+        form = layui.form;
+        layer = layui.layer;
+        var laydate = layui.laydate;
+        form.on('submit(add)', function (data) {
+            data.field.max_size = byteFormat(data.field.max_size, data.field.maxSizeUnit);
+            data.field.value = data.field.value.replaceAll("\\", "/");
+            Reflect.deleteProperty(data.field, "maxSizeUnit");
+            console.log(data.field);
+            $.ajax("/api/driver/add", {
+                type: 'post',
+                data: data.field,
+                dataType: "json",
+                success: function (resp) {
+                    console.log(resp);
+                    if (resp.code === 0) {
+                        layer.alert("添加成功", {
+                                icon: 6
+                            },
+                            function () {
+                                //关闭当前frame
+                                xadmin.close();
+
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                    } else {
+                        layer.alert(resp.msg, {
+                            icon: 5
+                        })
+                    }
+
+                }
+            });
+            return false;
+        });
+    });
+
+    function byteFormat(size, unit) {
+        let result = 0;
+        switch (unit) {
+            default:
+            case "B": {
+                result = size;
+                break;
+            }
+            case "KB": {
+                result = size * (1 << 10);
+                break;
+            }
+            case "MB": {
+                result = size * (1 << 20);
+                break;
+            }
+            case "GB": {
+                result = size * (1 << 30);
+                break;
+            }
+        }
+        return result;
+    }
+</script>
+</body>
+</html>

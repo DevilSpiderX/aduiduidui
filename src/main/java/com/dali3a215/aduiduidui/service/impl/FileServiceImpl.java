@@ -237,6 +237,7 @@ public class FileServiceImpl implements FileService {
             logger.error(e.getMessage(), e);
             return 1;
         }
+        driverService.addUsedSize(driver.getId(), size);
         //添加缓存
         if (driver.getEnableCache()) {
             String fileName = realPath.getFileName().toString();

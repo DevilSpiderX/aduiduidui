@@ -64,17 +64,8 @@
         table.render({
             elem: '#demo',
             url: url + "/api/user/list",
-            page: true,
-            limits: [10],
             method: 'post',
             dataType: "json",
-            where: {
-                origin: host,
-                name: sessionStorage.getItem("admin")['adminName'],
-                sid: sessionStorage.getItem("sid"),
-                offset: 0,
-                pageSize: 10
-            },
             cols: [[
                 {field: 'uid', title: '用户账号'},
                 {field: 'username', title: '用户名'},
@@ -92,13 +83,29 @@
                 {field: 'information', title: '信息'},
                 {title: '操作', toolbar: "#barDemo"}
             ]],
-            parseData: function (msg) {
-                console.log(msg);
+            parseData: function (resp) {
+                console.log(resp);
+                if (resp.code === 1) {
+                    layer.alert(resp.msg, {
+                        title: "提示"
+                    }, function (index) {
+                        location.reload();
+                        layer.close(index);
+                    })
+                } else if (resp.code === 101) {
+                    layer.alert(resp.msg, {
+                        icon: 5,
+                        title: "提示"
+                    }, function (index) {
+                        window.open("/admin/login.html", "_parent");
+                        layer.close(index);
+                    })
+                }
                 return {
-                    "code": 0,
-                    "msg": '',
-                    "count": msg.data instanceof Array ? msg.data.length : 1,
-                    "data": msg.data instanceof Array ? msg.data : [msg.data]
+                    "code": resp.code,
+                    "msg": resp.msg,
+                    "count": resp.data instanceof Array ? resp.data.length : 1,
+                    "data": resp.data instanceof Array ? resp.data : [resp.data]
                 }
             }
         });
@@ -134,23 +141,13 @@
         form.on('submit(sreach)', function (data) {
             if (data.field.uid !== "") {
                 table.reload('demo', {
-                    url: url + "/api/user/info",
-                    page: 1,
-                    pageSize: 10,
-                    offset: 0,
+                    url: "/api/user/info",
                     where: {
                         uid: data.field.uid
                     }
                 });
                 return false;
             }
-            // table.reload('demo', {
-            //     url: url + "/sysStudent/likeall",
-            //     where: data.field,
-            //     page: 1,
-            //     pageSize: 10,
-            //     offset: 0
-            // });
             location.reload();
             return false;
         });

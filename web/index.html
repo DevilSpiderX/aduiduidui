@@ -1,11 +1,330 @@
 <!DOCTYPE html>
+<!--suppress JSUnresolvedVariable, JSUnusedGlobalSymbols -->
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>啊对对对</title>
+    <title>主页 - 啊对网盘</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.2.37/vue.global.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
 </head>
+<style>
+    html, body, #app {
+        height: 100%;
+        background-color: #f4f6f9;
+    }
+
+    li.mb-2 {
+        list-style-type: none;
+    }
+
+    li.mb-2 > a {
+        text-decoration: none;
+    }
+
+    li.mb-2 > a i {
+        color: black;
+    }
+</style>
 <body>
-<h1>Hello World!</h1>
+<div id="app">
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark container-fluid">
+        <!-- 导航栏LOGO -->
+        <a class="navbar-brand">用户：{{username}}</a>
+
+        <!-- 自适应弹出按钮 -->
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"
+                aria-label="折叠">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- 导航栏菜单 -->
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <!-- 修改用户信息按钮 -->
+                <li class="nav-item my-nav-item">
+                    <a class="nav-link" href="javascript:void(0);" data-bs-toggle="modal"
+                       data-bs-target="#updateInfoModal">
+                        <i class="fa-solid fa-pen-to-square fa-fw" style="font-size: 20px;"></i>
+                        修改用户信息
+                    </a>
+                </li>
+                <!-- 退出账号按钮 -->
+                <li class="nav-item my-nav-item">
+                    <a class="nav-link" href="javascript:void(0);" @click="logout">
+                        <i class="fa-solid fa-right-from-bracket fa-fw" style="font-size: 20px;"></i>
+                        退出账号
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="height: calc(100% - 56px);">
+        <div class="card" style="height: 100%">
+            <div class="card-header">
+                <h4 class="card-title">{{path}}</h4>
+            </div>
+            <div class="card-body">
+                <div class="col-12 row mb-2" style="padding-left: 32px;">
+                    <div class="col-7">
+                        文件名
+                    </div>
+                    <div class="col-2">
+                        大小
+                    </div>
+                    <div class="col-3">
+                        类型
+                    </div>
+                </div>
+                <ul>
+                    <li class="mb-2" v-for="item in items" v-html="item.a"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 修改用户信息模态框 -->
+<div class="modal fade" id="updateInfoModal">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+                <h4 class="modal-title">修改用户信息</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- 模态框内容 -->
+            <div class="modal-body">
+                <form id="updateForm" @submit.prevent="submit">
+                    <div class="mb-3">
+                        <label for="uidIn" class="form-label">用户账号</label>
+                        <input type="text" class="form-control" id="uidIn" v-model="uid" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordIn" class="form-label">密码</label>
+                        <input type="password" class="form-control" id="passwordIn"
+                               placeholder="为空则不更改密码" v-model="password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="usernameIn" class="form-label">用户名称</label>
+                        <input type="text" class="form-control" id="usernameIn" v-model="username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="sexIN" class="form-label">性别</label>
+                        <select class="form-select" id="sexIN" v-model="sex">
+                            <option value="M">男</option>
+                            <option value="F">女</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="informationIN" class="form-label">用户信息</label>
+                        <input type="text" class="form-control" id="informationIN" v-model="information">
+                    </div>
+                </form>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="updateForm">注册</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    function getQueryVariable(variable) {
+        let query = window.location.search.substring(1);
+        let vars = query.split("&");
+        for (let i = 0; i < vars.length; i++) {
+            let pair = vars[i].split("=");
+            if (decodeURI(pair[0]) === variable) {
+                return decodeURI(pair[1]);
+            }
+        }
+        return null;
+    }
+
+    function byteFormat(size) {
+        let KB = 1 << 10;
+        let MB = 1 << 20;
+        let GB = 1 << 30;
+        let result = '';
+        if (size >= GB) {
+            result = (size / GB).toFixed(2) + " GB";
+        } else if (size >= MB) {
+            result = (size / MB).toFixed(2) + " MB";
+        } else if (size >= KB) {
+            result = (size / KB).toFixed(2) + " KB";
+        } else {
+            result = size + " B";
+        }
+        return result;
+    }
+
+    let userInfo = {
+        uid: sessionStorage.getItem("uid"),
+        username: sessionStorage.getItem("username"),
+        sex: sessionStorage.getItem("sex"),
+        information: sessionStorage.getItem("information")
+    }
+
+    if (userInfo.uid === null || userInfo.uid === '') {
+        window.open("login.html", "_self");
+    }
+
+    let app = Vue.createApp({
+        data() {
+            let items = [];
+            let path = getQueryVariable("path");
+            if (path === null || path === "") path = "/";
+            if (path !== "/") {
+                let n = path.lastIndexOf("/")
+                let lastPath = path.substring(0, n);
+                let item = {
+                    a: `<a href="index.html?path=${lastPath}">
+                            <div class="row">
+                                <span class="col-7"><i class="fa-solid fa-arrow-turn-up fa-fw"></i>..</span>
+                                <span class="col-2">-</span>
+                                <span class="col-3">上级目录</span>
+                            </div>
+                        </a>`
+                };
+                items.push(item);
+            }
+            return {
+                username: userInfo.username,
+                path: path,
+                items: items
+            }
+        },
+        methods: {
+            logout() {
+                axios("/api/user/logout", {
+                    method: "POST"
+                }).then(function (resp) {
+                    let body = resp.data;
+                    if (body.code === 0) {
+                        window.open("login.html", "_self");
+                    }
+                });
+            }
+        }
+    }).mount("#app");
+
+    axios(`/api/file/list?path=${app.path}`).then(function (resp) {
+        let body = resp.data;
+        if (body.code === 0) {
+            let list = body.data;
+            let listKeys = Object.keys(list).sort((a, b) => {
+                if (list[a].directory && list[b].directory) {
+                    return list[a].name.localeCompare(list[b].name);
+                } else if (!list[a].directory && list[b].directory) {
+                    return 1
+                } else if (list[a].directory && !list[b].directory) {
+                    return -1;
+                } else {
+                    return list[a].name.localeCompare(list[b].name);
+                }
+            });
+
+            for (let key of listKeys) {
+                let d = list[key];
+                let name = d.name;
+                let path = d.path;
+                let size = d.size;
+                let directory = d.directory;
+                let contentType = d.contentType;
+
+                let href, i_class, type;
+                if (directory) {
+                    href = `index.html?path=${path}`;
+                    i_class = "fa-solid fa-folder";
+                    size = '-';
+                    type = "文件夹"
+                } else {
+                    href = `/api/file/download/${name}?path=${path}`;
+                    i_class = "fa-solid fa-file";
+                    size = byteFormat(size);
+                    type = contentType.split("/")[1];
+                }
+
+                let item = {
+                    a: `<a href="${href}">
+                            <div class="row">
+                                <span class="col-7"><i class="${i_class} fa-fw"></i>${name}</span>
+                                <span class="col-2">${size}</span>
+                                <span class="col-3">${type}</span>
+                            </div>
+                        </a>`
+                }
+                app.items.push(item);
+            }
+        } else {
+            window.open("login.html", "_self");
+        }
+    });
+
+    let updateInfoModal = new bootstrap.Modal(document.getElementById('updateInfoModal'));
+
+    let modelApp = Vue.createApp({
+        data() {
+            return {
+                uid: userInfo.uid,
+                password: "",
+                username: userInfo.username,
+                sex: userInfo.sex,
+                information: userInfo.information
+            }
+        },
+        methods: {
+            submit() {
+                let data = {
+                    username: this.username,
+                    sex: this.sex,
+                    information: this.information
+                }
+
+                if (this.password !== "") {
+                    data.password = this.password;
+                }
+
+                axios("/api/user/update", {
+                    method: "POST",
+                    data: JSON.stringify(data),
+                    headers: {"content-type": "application/json"}
+                }).then(function (resp) {
+                    let body = resp.data;
+                    if (body.code === 0) {
+                        alert("修改成功")
+                        updateInfoModal.hide();
+                        if (modelApp.username !== userInfo.username) {
+                            userInfo.username = modelApp.username;
+                            app.username = modelApp.username;
+                            sessionStorage.setItem("username", modelApp.username);
+                        }
+                        if (modelApp.sex !== userInfo.sex) {
+                            userInfo.sex = modelApp.sex;
+                            sessionStorage.setItem("sex", modelApp.sex);
+                        }
+                        if (modelApp.information !== userInfo.information) {
+                            userInfo.information = modelApp.information;
+                            sessionStorage.setItem("information", modelApp.information);
+                        }
+                    } else {
+                        alert(body.msg)
+                    }
+                });
+            }
+        }
+    }).mount("#updateInfoModal");
+</script>
 </html>

@@ -21,7 +21,7 @@ public class AutoTask {
         userDriverService.checkAllSpace();
     }
 
-    @Scheduled(cron = "0 10 */2 * * ?")
+    @Scheduled(cron = "0 5 */1 * * ?")
     public void searchCacheAutoTask() {
         searchCacheService.cleanCacheByTime();
         searchCacheService.generateCache();

@@ -1,7 +1,9 @@
 package com.dali3a215.aduiduidui.controller;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.dali3a215.aduiduidui.controller.response.ResultArray;
 import com.dali3a215.aduiduidui.controller.response.ResultMap;
+import com.dali3a215.aduiduidui.entity.SystemConfig;
 import com.dali3a215.aduiduidui.service.SystemConfigService;
 import com.dali3a215.aduiduidui.util.AduiCipher;
 import org.springframework.stereotype.Controller;
@@ -80,6 +82,16 @@ public class AdminController {
         systemConfigService.setSearchCacheKeepTime(time);
         respResult.setCode(0);
         respResult.setMsg("修改成功");
+        return respResult;
+    }
+
+    @RequestMapping("/getSystemConfig")
+    @ResponseBody
+    public ResultArray<SystemConfig> getSystemConfig() {
+        ResultArray<SystemConfig> respResult = new ResultArray<>();
+        respResult.setCode(0);
+        respResult.setMsg("获取成功");
+        respResult.setData(systemConfigService.list());
         return respResult;
     }
 

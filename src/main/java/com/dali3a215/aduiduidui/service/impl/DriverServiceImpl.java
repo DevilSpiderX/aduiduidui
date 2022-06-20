@@ -4,6 +4,7 @@ import com.dali3a215.aduiduidui.entity.Driver;
 import com.dali3a215.aduiduidui.service.DriverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.teasoft.bee.osql.SuidRich;
 import org.teasoft.honey.osql.core.BeeFactoryHelper;
@@ -77,6 +78,15 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public boolean delete(int id) {
         return dao.deleteById(Driver.class, id) == 1;
+    }
+
+    @Override
+    public synchronized void addUsedSize(long id, long size) {
+        Driver driver = get(id);
+        Driver newDriver = new Driver();
+        BeanUtils.copyProperties(driver, newDriver);
+        newDriver.setUsedSize(driver.getUsedSize() + size);
+        dao.update(driver, newDriver);
     }
 
     @Override
