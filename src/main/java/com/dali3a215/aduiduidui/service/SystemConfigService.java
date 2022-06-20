@@ -1,6 +1,9 @@
 package com.dali3a215.aduiduidui.service;
 
+import com.dali3a215.aduiduidui.entity.SystemConfig;
+
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public interface SystemConfigService {
 
@@ -9,6 +12,8 @@ public interface SystemConfigService {
     String getValue(String key);
 
     void setValue(String key, String value, String remark);
+
+    List<SystemConfig> list();
 
     int remove(String key);
 

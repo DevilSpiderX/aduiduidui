@@ -80,7 +80,7 @@ public class UserController {
                 new Thread(() -> userDriverService.checkUserSpace(uid), "checkUserSpace_" + uid).start();
             } else {
                 respResult.setCode(1);
-                respResult.setMsg("注册失败");
+                respResult.setMsg("账号已存在");
             }
         } else {
             respResult.setCode(2);

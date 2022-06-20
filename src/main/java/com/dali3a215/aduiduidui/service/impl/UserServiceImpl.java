@@ -32,10 +32,9 @@ public class UserServiceImpl implements UserService {
         if (uid == null) return null;
         User user = new User();
         user.setUid(uid);
-        List<User> result = dao.select(user, "username,sex,information");
+        List<User> result = dao.select(user, "uid,username,sex,information");
         if (result.size() == 0) return null;
         user = result.get(0);
-        user.setUid(uid);
         return user;
     }
 

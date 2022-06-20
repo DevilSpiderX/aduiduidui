@@ -76,6 +76,11 @@ public class SystemConfigServiceImpl implements SystemConfigService {
     }
 
     @Override
+    public List<SystemConfig> list() {
+        return dao.select(new SystemConfig());
+    }
+
+    @Override
     public int remove(String key) {
         if (baseKeys.contains(key)) {
             return 2;
