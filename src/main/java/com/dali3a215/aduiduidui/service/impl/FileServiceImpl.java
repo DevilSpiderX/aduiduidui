@@ -229,7 +229,7 @@ public class FileServiceImpl implements FileService {
             while (size < contentLength) {
                 int len = originIn.read(buff);
                 if (len == -1) break;
-                out.write(buff);
+                out.write(buff, 0, len);
                 out.flush();
                 size += len;
             }
@@ -309,7 +309,7 @@ public class FileServiceImpl implements FileService {
             while (size < contentLength) {
                 int len = in.read(buff);
                 if (len == -1) break;
-                originOut.write(buff);
+                originOut.write(buff, 0, len);
                 originOut.flush();
                 size += len;
             }

@@ -85,7 +85,7 @@
                 {
                     field: 'maxSize', title: '驱动器最大容量', templet(d) {
                         let size = d.maxSize;
-                        let result = '';
+                        let result;
                         if (size >= GB) {
                             result = (size / GB).toFixed(2) + " GB";
                         } else if (size >= MB) {
